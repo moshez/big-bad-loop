@@ -4,9 +4,11 @@
 \usepackage{textcomp}
 \usepackage{fancyvrb}
 
+\mode<beamer>{%
 \setbeamertemplate{footline}[text line]{%
-  \parbox{\linewidth}{\vspace*{-64pt}https://cobordism.com}}
-\setbeamertemplate{navigation symbols}{}
+  \parbox{\linewidth}{\vspace*{-64pt}https://cobordism.com}}}
+\mode<beamer>{%
+\setbeamertemplate{navigation symbols}{}}
 
 \title{Who's Afraid of the Big Bad ceval Loop?}
 \subtitle{Me}
@@ -64,7 +66,7 @@
 \frametitle{Stack operations}
 \end{frame}
 
-\begin{frame}
+\begin{frame}[fragile]
 \frametitle{The Loop}
 \verb|PyEval_EvalFrameDefault|
 \end{frame}
@@ -90,13 +92,12 @@ Prelude vs. switch
 \frametitle{Signals: calling handlers}
 \end{frame}
 
-
 \begin{frame}
-\framtitle{Global Interpreter Lock}
+\frametitle{Global Interpreter Lock}
 \end{frame}
 
 \begin{frame}
-\frametitle{GIL: Acquisition]
+\frametitle{GIL: Acquisition}
 \end{frame}
 
 \begin{frame}
