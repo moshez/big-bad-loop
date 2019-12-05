@@ -26,9 +26,60 @@
 \frametitle{What is the eval loop?}
 \end{frame}
 
+The CPython interpreter,
+as its name implies,
+is writen in C.
+It contains several parts,
+which we will not delve into today.
+It has the parser and byte compiler,
+which produce Python byte code.
+It also has the implementation of
+native objects,
+such as integers as strings,
+as C
+"extension classes".
+
+However,
+in the middle between those parts,
+something must
+*actually execute*
+the byte-code.
+When we have a sequence of byte codes,
+something must inspect the code,
+decide which operation to do,
+and do it.
+
+As this description might imply,
+this is one of the most performance critical parts
+in the CPython interpreter.
+The eval loop has seen many generations of iterations,
+and has evolved together with CPU architecture.
+
+
 \begin{frame}
 \frametitle{What is the eval loop not?}
 \end{frame}
+
+The eval loop does not do any parsing or byte-code compilation.
+Those steps must have been done before:
+usually,
+Python will do them for us
+(although we can force it to execute on a sequence
+of byte codes).
+It also does not have any of Python's
+*object*
+semantics:
+it does not know that one integer divided by another must sometimes
+result in a floating point number,
+or that strings are immutable.
+
+The semantics of Python's
+*objects*
+are part of the class definitions:
+this is where integer division
+or string modification
+(resulting in an error)
+are implemented.
 
 \begin{frame}
 \frametitle{Byte compiling}
