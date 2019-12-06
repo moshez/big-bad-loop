@@ -24,6 +24,21 @@
 
 \begin{frame}
 \frametitle{What is the eval loop?}
+
+\begin{lstlisting}
+for (;;) {
+    /* ... */
+    /* This is a lie */
+    opcode = (*next_instr) & 0xff;
+    oparg = (*next_instr) >> 8;
+    next_instr++;
+    /* ... */
+    switch (opcode) {
+        /* ... */
+    }
+}
+\end{lstlisting}
+
 \end{frame}
 
 The CPython interpreter,
