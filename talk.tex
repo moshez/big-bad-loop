@@ -23,22 +23,7 @@
 \frame{\titlepage}
 
 \begin{frame}
-\frametitle{What is the eval loop?}
-
-\begin{lstlisting}
-for (;;) {
-    /* ... */
-    /* This is a lie */
-    opcode = (*next_instr) & 0xff;
-    oparg = (*next_instr) >> 8;
-    next_instr++;
-    /* ... */
-    switch (opcode) {
-        /* ... */
-    }
-}
-\end{lstlisting}
-
+\frametitle{What is not the eval loop?}
 \end{frame}
 
 The CPython interpreter,
@@ -53,27 +38,6 @@ native objects,
 such as integers as strings,
 as C
 "extension classes".
-
-However,
-in the middle between those parts,
-something must
-*actually execute*
-the byte-code.
-When we have a sequence of byte codes,
-something must inspect the code,
-decide which operation to do,
-and do it.
-
-As this description might imply,
-this is one of the most performance critical parts
-in the CPython interpreter.
-The eval loop has seen many generations of iterations,
-and has evolved together with CPU architecture.
-
-
-\begin{frame}
-\frametitle{What is the eval loop not?}
-\end{frame}
 
 The eval loop does not do any parsing or byte-code compilation.
 Those steps must have been done before:
@@ -95,6 +59,44 @@ this is where integer division
 or string modification
 (resulting in an error)
 are implemented.
+
+\begin{frame}
+\frametitle{What is the eval loop?}
+
+\begin{lstlisting}
+for (;;) {
+    /* ... */
+    /* This is a lie */
+    opcode = (*next_instr) & 0xff;
+    oparg = (*next_instr) >> 8;
+    next_instr++;
+    /* ... */
+    switch (opcode) {
+        /* ... */
+    }
+}
+\end{lstlisting}
+
+\end{frame}
+
+In the middle between those parts,
+something must
+*actually execute*
+the byte-code.
+When we have a sequence of byte codes,
+something must inspect the code,
+decide which operation to do,
+and do it.
+
+As this description might imply,
+this is one of the most performance critical parts
+in the CPython interpreter.
+The eval loop has seen many generations of iterations,
+and has evolved together with CPU architecture.
+This is the reason for the white lie above:
+the actual code is a few layers of macros,
+including an ifdef based on the machine architecture.
+
 
 \begin{frame}
 \frametitle{Byte compiling}
