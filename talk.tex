@@ -98,13 +98,18 @@ the actual code is a few layers of macros,
 including an ifdef based on the machine architecture.
 
 
-\begin{frame}
-\frametitle{Byte compiling}
+\begin{frame}[fragile]
+\frametitle{Code objects}
+
+\begin{lstlisting}
+>>> (lambda x:None).__code__
+<code object <lambda> at 0x7fb7b67725d0, file "<stdin>", line 1>
+\end{lstlisting}
+
 \end{frame}
 
-\begin{frame}
-\frametitle{Code objects}
-\end{frame}
+Code objects are usually found in functions,
+as the \verb|__code__| attribute.
 
 \begin{frame}
 \frametitle{Python bytecode}
