@@ -113,7 +113,28 @@ as the \verb|__code__| attribute.
 
 \begin{frame}
 \frametitle{Python bytecode}
+
+\begin{lstlisting}
+>>> (lambda a, b: a + b
+... ).__code__.co_code
+b'|\x00|\x01\x17\x00S\x00'
+>>> dis.dis(_)
+          0 LOAD_FAST                0 (0)
+          2 LOAD_FAST                1 (1)
+          4 BINARY_ADD
+          6 RETURN_VALUE
+\end{lstlisting}
+
 \end{frame}
+
+Python bytecode are...
+bytes.
+They come in sequence of two:
+a code,
+and then an argument.
+For codes that do not need an argument,
+the argument will be NIL,
+the 0 byte.
 
 \begin{frame}
 \frametitle{Frame}
