@@ -138,7 +138,32 @@ the 0 byte.
 
 \begin{frame}
 \frametitle{Frame}
+
+Where the eval happens
 \end{frame}
+
+Python bytecode always happens in the context of a
+{\em frame}.
+A frame gives context to code.
+Calling a function will
+*create*
+a frame.
+Naturally,
+distinct calls to the function
+will generate distinct frames.
+This is how recursion can work.
+
+Frames are explicit,
+though not documented,
+in Python.
+The current frame can always be retrieved by
+\verb|sys._getframe()|.
+While it should never be done in
+"real"
+code,
+it is a great exercise to play with it.
+It also serves as a useful thing in debuggers
+and other coding tools.
 
 \begin{frame}
 \frametitle{Frame contents}
