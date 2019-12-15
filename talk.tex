@@ -167,7 +167,23 @@ and other coding tools.
 
 \begin{frame}
 \frametitle{Frame contents}
+
+Code and context
 \end{frame}
+
+Since code evaluation always happen in the context of a
+*frame*,
+the frame holds the code.
+It also holds several links to namespaces:
+the locals, the globals, and the builtins.
+Finally,
+frames are
+*nested*:
+a frame will have a link to the "outer",
+or "back",
+frame.
+
+
 
 \begin{frame}
 \frametitle{Frame inspection}
