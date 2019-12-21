@@ -187,6 +187,20 @@ frame.
 
 \begin{frame}
 \frametitle{Frame inspection}
+
+\begin{lstlisting}
+>>> def foo(): bar()
+... 
+>>> def bar():
+...     global frm;frm = sys._getframe()
+... 
+>>> frm.f_code.co_name
+'bar'
+>>> frm.f_back.f_code.co_name
+'foo'
+>>> frm.f_back.f_back.f_code.co_name
+'<module>'
+\end{lstlisting}
 \end{frame}
 
 \begin{frame}
