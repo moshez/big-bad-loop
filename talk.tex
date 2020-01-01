@@ -203,6 +203,15 @@ frame.
 \end{lstlisting}
 \end{frame}
 
+The frames have a link to the "back frame",
+where a "return" statement or a "yield" statement would go.
+This explicit structure of frames is an essential part of allowing
+generators and other more complicated control structures.
+They also have a link to the code object.
+Frames also have an \verb|f_lasti| property,
+which contains an index to the last instruction.
+This is the variable that the eval loop increments.
+
 \begin{frame}
 \frametitle{Stack machine}
 \end{frame}
