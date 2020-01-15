@@ -214,11 +214,23 @@ This is the variable that the eval loop increments.
 
 \begin{frame}
 \frametitle{Stack machine}
+
+\begin{lstlisting}
+PyObject **stack_pointer;
+/* ... */
+#define BASIC_PUSH(v)     (*stack_pointer++ = (v))
+#define BASIC_POP()       (*--stack_pointer)
+\end{lstlisting}
 \end{frame}
 
-\begin{frame}
-\frametitle{Stack structure}
-\end{frame}
+The basic semantics of Python's byte code are those of a stack machine.
+The operations all operate on a stack:
+it can be pushed or popped,
+and operations happen on the stack.
+The stack space is part of the frame.
+This means that a frame suspended,
+for example when yielding,
+still has the stack.
 
 \begin{frame}
 \frametitle{Stack operations}
