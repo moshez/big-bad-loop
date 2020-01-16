@@ -234,12 +234,50 @@ still has the stack.
 
 \begin{frame}
 \frametitle{Stack operations}
+
+\begin{lstlisting}
+#define TOP()             (stack_pointer[-1])
+#define PEEK(n)           (stack_pointer[-(n)])
+#define SET_TOP(v)        (stack_pointer[-1] = (v))
+\end{lstlisting}
 \end{frame}
+
+The Python implementation defines some macros for highly
+efficient stack operations. This is important,
+since much of what Python does involves manipulatig the
+stack.
 
 \begin{frame}[fragile]
 \frametitle{The Loop}
-\verb|PyEval_EvalFrameDefault|
+
+\begin{lstlisting}
+PyObject *_PyEval_EvalFrameDefault(PyFrameObject *f, int throwflag)
+{
+    /* ... */
+    /* Small lie */
+    next_instr = f->f_code->co_code + f->f_lasti;
+    for (;;) {
+        /* ... */
+        /* Small lie */
+        opcode = (*next_instr) & 0xff;
+        oparg = (*next_instr) >> 8;
+        next_instr++;
+        switch (opcode) {
+            /* ... */
+        }
+    }
+}
+\end{lstlisting}
 \end{frame}
+
+This is the Python eval loop.
+We initialize the insturction pointer to the current place based
+on the frame
+(in case it needs to be resumed).
+The lies are because I simplified the code, and made it less efficient,
+but equivalent. Python is highly optimized, but that can obscure
+the semantics.
+
 
 \begin{frame}
 \frametitle{The Two Halves}
