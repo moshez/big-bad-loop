@@ -259,6 +259,7 @@ PyObject *_PyEval_EvalFrameDefault(PyFrameObject *f, int throwflag)
     for (;;) {
         /* ... */
         /* Small lie */
+    fast_next_opcode:
         opcode = (*next_instr) & 0xff;
         oparg = (*next_instr) >> 8;
         next_instr++;
@@ -266,6 +267,8 @@ PyObject *_PyEval_EvalFrameDefault(PyFrameObject *f, int throwflag)
             /* ... */
         }
     }
+    error:
+        /* ... */
 }
 \end{lstlisting}
 \end{frame}
@@ -280,9 +283,39 @@ the semantics.
 
 
 \begin{frame}
-\frametitle{The Two Halves}
-Prelude vs. switch
+\frametitle{The Switch}
+\begin{lstlisting}
+ switch (opcode) {
+        /* ... */
+        case TARGET(LOAD_FAST): {
+            PyObject *value = GETLOCAL(oparg);
+            if (value == NULL) {
+                /* ... */
+                goto error;
+            }
+            /* ... */
+            goto fast_next_opcode;
+        }
+        /* ... */
+        case TARGET(UNARY_NEGATIVE): {
+            /* ... */
+            continue;
+        }
+        /* ... */
+}
+\end{lstlisting}
 \end{frame}
+
+Every instruction handle finishes with one of three:
+either it goes to an error, or it does a
+"fast"
+or
+"slow"
+dispatch.
+"Fast" dispatches are those that skip various checks:
+for example,
+thread switches cannot happen between a "fast" dispatch
+and the one that follows.
 
 \begin{frame}
 \frametitle{Eval Breaker}
