@@ -319,46 +319,126 @@ and the one that follows.
 
 \begin{frame}
 \frametitle{Eval Breaker}
+\begin{lstlisting}
+ceval->eval_breaker = 
+   ceval->gil_drop_request |
+   ceval->signals_pending | 
+   ceval->pending.calls_to_do) | 
+   ceval->pending.async_exc;
+\end{lstlisting}
 \end{frame}
+
+These are lies!
+The actual code is slightly more complicated since it has to
+do this computation while carefully considering signals and threads,
+so it uses all kinds of thread-safe primitives.
+However, the actual computation is the same.
+
+\frametitle{Eval Breaker}
+\begin{lstlisting}
+if (eval_breaker) {
+    if (ceval->signals_pending) {
+        handle_signals(runtime);
+    }
+    if (ceval->pending.calls_to_do) {
+        make_pending_calls(runtime);
+    }
+    if (ceval->gil_drop_request) {
+        drop_gil(ceval, tstate);
+        /* Other threads may run now */
+        take_gil(ceval, tstate);
+    }
+    if (tstate->async_exc != NULL) {
+        _PyErr_SetNone(tstate, tstate->async_exc);
+        goto error;
+    }
+}
+\end{lstlisting}
+\end{frame}
+
+As always,
+these are a bunch of dirty lies!
+The actual code has a bunch of stuff for thread-safety,
+and error handling.
+It also skips eval-breakage in the presence of some opcodes
+that would make handling signals cause issues:
+we delay until we get to a nice,
+regular opcode.
 
 \begin{frame}
 \frametitle{Signal handling}
+\begin{lstlisting}
+void trip_signal(int sig_num) {
+     /* ... */
+    PyRuntimeState *runtime = &_PyRuntime;
+    PyThreadState *tstate = _PyRuntimeState_GetThreadState(runtime);
+    runtime->ceval->signals_pending = 1
+    runtime->ceval->eval_breaker = 1
+    /* ... */
+}
+\end{lstlisting}
 \end{frame}
 
-\begin{frame}
-\frametitle{Signals: recording pending}
-\end{frame}
+This is a simplified version of Python's signal handler.
+It sets the signals pending and eval breaker flags,
+so that eventually,
+the loop will handle the signals.
 
-\begin{frame}
-\frametitle{Signals: calling handlers}
-\end{frame}
+Signals are called in a
+"safe"
+place Python-wise,
+but still somewhat arbitrary:
+in theory,
+we could be inside the evaluation of Python code inside
+an \verb|__del__| that was called because a list index was set.
+
 
 \begin{frame}
 \frametitle{Global Interpreter Lock}
+
+\begin{itemize}
+\item Python bytecode evaluation
+\end{itemize}
 \end{frame}
+
+The global interpreter lock,
+on which many reams of ink have been spilled,
+makes sure that Python can only evaluate Python bytecode
+on only one thread.
+This means that the beginning of the ceval loop,
+somewhere at the top,
+makes sure we have the lock.
+
+However,
+as we saw,
+every few calls,
+we do "eval breaker"
+and do a drop/take of the GIL.
+This means that if another thread is waiting in its
+"take"
+GIL then the drop will give it a chance to capture it.
 
 \begin{frame}
 \frametitle{GIL: Acquisition}
+\begin{lstlisting}
+MUTEX_LOCK(gil->mutex);
+while (gil.locked)
+    COND_TIMED_WAIT(gil->cond, gil->mutex, interval, timed_out);
+    ceval.gil_drop_request = 1;
+    ceval.eval_breaker = 1;
+}
+MUTEX_UNLOCK(gil->mutex);
+\end{lstlisting}
 \end{frame}
 
 \begin{frame}
 \frametitle{GIL: Release}
-\end{frame}
-
-\begin{frame}
-\frametitle{GIL: Drop request}
-\end{frame}
-
-\begin{frame}
-\frametitle{What is branch prediction?}
-\end{frame}
-
-\begin{frame}
-\frametitle{What are computed gotos?}
-\end{frame}
-
-\begin{frame}
-\frametitle{What is the "threaded code" optimization?}
+\begin{lstlisting}
+MUTEX_LOCK(gil->mutex);
+gil.locked = 0;
+COND_SIGNAL(gil->cond);
+MUTEX_UNLOCK(gil->mutex);
+\end{lstlisting}
 \end{frame}
 
 \begin{frame}
