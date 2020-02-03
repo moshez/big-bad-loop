@@ -428,8 +428,20 @@ while (gil.locked)
     ceval.eval_breaker = 1;
 }
 MUTEX_UNLOCK(gil->mutex);
+MUTEX_LOCK(gil->switch_mutex);
+gil.locked = 1
+MUTEX_UNLOCK(gil->switch_mutex);
 \end{lstlisting}
 \end{frame}
+
+This loop is the logic for acquiring the GIL.
+We lock the mutex,
+and then loop waiting for the condition variable to fire,
+and the GIL to become unlocked.
+Once it is unlocked,
+we lock the GIL ourselves,
+and we are done.
+
 
 \begin{frame}
 \frametitle{GIL: Release}
@@ -441,8 +453,27 @@ MUTEX_UNLOCK(gil->mutex);
 \end{lstlisting}
 \end{frame}
 
+Releasing the GIL is much more straightforward:
+we do not have to wait,
+we just set it to unlocked,
+and fire the condition variable.
+
 \begin{frame}
 \frametitle{Takeaways}
+
+\begin{itemize}
+\item Python is not magic\pause
+\item ...although it is definitely sufficiently advanced.
+\end{itemize}
 \end{frame}
+
+CPython,
+at the end of the day,
+is just a program written in C.
+It is possible to figure what is going on there.
+That said,
+remember that almost all code examples shown here were
+bold-faced lies,
+and the actual code pulls a lot of tricks to eke out performance.
 
 \end{document}
