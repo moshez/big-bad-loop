@@ -97,6 +97,42 @@ This is the reason for the white lie above:
 the actual code is a few layers of macros,
 including an ifdef based on the machine architecture.
 
+\begin{frame}[fragile]
+\frametitle{On lying}
+
+Everybody lies.
+\end{frame}
+
+The code inside CPython is the result of,
+literally,
+decades of optimization.
+You are,
+hopefully,
+grateful for the optimizations every time you run your Python code
+and it finishes quickly.
+But those optimizations do not come cheap:
+among other things,
+they require non-trivial coding techniques.
+These often obscure the actual algorithm,
+and make the code hard to read.
+
+This is a great trade-off for an interpreter!
+But it is not a great trade-off for a talk:
+my goal is for you to understand this,
+not to be able to run it in your head faster.
+
+So I have decided to take a somewhat extreme solution:
+I intend to lie through my teeth.
+Most of the code examples I will show to you do not
+appear in the interpreter.
+However,
+they are more-or-less equivalent,
+and get the point across.
+They are,
+for the most part,
+the first draft you would write if you were to reimplement CPython,
+before starting to profile and optimize.
+
 
 \begin{frame}[fragile]
 \frametitle{Code objects}
