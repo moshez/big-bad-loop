@@ -60,7 +60,7 @@ or string modification
 (resulting in an error)
 are implemented.
 
-\begin{frame}
+\begin{frame}[fragile]
 \frametitle{What is the eval loop?}
 
 \begin{lstlisting}
@@ -147,7 +147,7 @@ before starting to profile and optimize.
 Code objects are usually found in functions,
 as the \verb|__code__| attribute.
 
-\begin{frame}
+\begin{frame}[fragile]
 \frametitle{Python bytecode}
 
 \begin{lstlisting}
@@ -221,7 +221,7 @@ frame.
 
 
 
-\begin{frame}
+\begin{frame}[fragile]
 \frametitle{Frame inspection}
 
 \begin{lstlisting}
@@ -248,7 +248,7 @@ Frames also have an \verb|f_lasti| property,
 which contains an index to the last instruction.
 This is the variable that the eval loop increments.
 
-\begin{frame}
+\begin{frame}[fragile]
 \frametitle{Stack machine}
 
 \begin{lstlisting}
@@ -268,7 +268,7 @@ This means that a frame suspended,
 for example when yielding,
 still has the stack.
 
-\begin{frame}
+\begin{frame}[fragile]
 \frametitle{Stack operations}
 
 \begin{lstlisting}
@@ -318,7 +318,7 @@ but equivalent. Python is highly optimized, but that can obscure
 the semantics.
 
 
-\begin{frame}
+\begin{frame}[fragile]
 \frametitle{The Switch}
 \begin{lstlisting}
  switch (opcode) {
@@ -353,7 +353,7 @@ for example,
 thread switches cannot happen between a "fast" dispatch
 and the one that follows.
 
-\begin{frame}
+\begin{frame}[fragile]
 \frametitle{Eval Breaker}
 \begin{lstlisting}
 ceval->eval_breaker = 
@@ -370,6 +370,7 @@ do this computation while carefully considering signals and threads,
 so it uses all kinds of thread-safe primitives.
 However, the actual computation is the same.
 
+\begin{frame}[fragile]
 \frametitle{Eval Breaker}
 \begin{lstlisting}
 if (eval_breaker) {
@@ -401,7 +402,7 @@ that would make handling signals cause issues:
 we delay until we get to a nice,
 regular opcode.
 
-\begin{frame}
+\begin{frame}[fragile]
 \frametitle{Signal handling}
 \begin{lstlisting}
 void trip_signal(int sig_num) {
@@ -454,7 +455,7 @@ This means that if another thread is waiting in its
 "take"
 GIL then the drop will give it a chance to capture it.
 
-\begin{frame}
+\begin{frame}[fragile]
 \frametitle{GIL: Acquisition}
 \begin{lstlisting}
 MUTEX_LOCK(gil->mutex);
@@ -479,7 +480,7 @@ we lock the GIL ourselves,
 and we are done.
 
 
-\begin{frame}
+\begin{frame}[fragile]
 \frametitle{GIL: Release}
 \begin{lstlisting}
 MUTEX_LOCK(gil->mutex);
