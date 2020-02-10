@@ -1,4 +1,5 @@
-# Who's Afraid of the Big Bad ceval Loop?
+Who's Afraid of the Big Bad ceval Loop?
+=======================================
 
 This repository contains the resources used to give the PyCascades/PyTennessee talk.
 The "handout.pdf" is probably the most useful resource:
@@ -19,3 +20,7 @@ to make watching the talk video a more accessible experience.
 It also has the LaTeX files,
 and build tooling,
 to enable modification and rebuild.
+
+
+This work is licensed under a Creative Commons Attribution 4.0 International License.
+See the file "LICENSE" in the repository for details.
